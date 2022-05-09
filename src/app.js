@@ -1,12 +1,37 @@
-import Header from './components/header'
+import { useState } from "react";
+import Header from "./components/header";
 
-import initialEmails from './data/emails'
+import initialEmails from "./data/emails";
 
-import './styles/app.css'
+import "./styles/app.css";
 
 function App() {
-  // Use initialEmails for state
-  console.log(initialEmails)
+  const [emails, setEmails] = useState(initialEmails);
+  console.log(initialEmails);
+
+  const toggleRead = (theEmail) => {
+    setEmails(
+      emails.map((email) => {
+        if (email === theEmail) {
+          return { ...email, read: !email.read };
+        } else {
+          return email;
+        }
+      })
+    );
+  };
+
+  const toggleStar = (theEmail) => {
+    setEmails(
+      emails.map((email) => {
+        if (email === theEmail) {
+          return { ...email, starred: !email.starred };
+        } else {
+          return email;
+        }
+      })
+    );
+  };
 
   return (
     <div className="app">
@@ -39,9 +64,37 @@ function App() {
           </li>
         </ul>
       </nav>
-      <main className="emails">{/* Render a list of emails here */}</main>
+      <main className="emails">
+        {emails.map((email) => {
+          const { id, sender, title, starred, read } = email;
+          return (
+            <li key={id} className={read ? "email read" : "email unread"}>
+              <div className="select">
+                <input
+                  onChange={() => toggleRead(email)}
+                  className="select-checkbox"
+                  type="checkbox"
+                  checked={read}
+                />
+              </div>
+              <div className="star">
+                <input
+                  onChange={() => toggleStar(email)}
+                  className="star-checkbox"
+                  type="checkbox"
+                  checked={starred}
+                />
+              </div>
+              <div className="sender">{sender}</div>
+              <div className="title">{title}</div>
+            </li>
+          );
+        })}
+      </main>
     </div>
-  )
+  );
 }
 
-export default App
+// <li key={id} className={read ? "email read" : "email unread"}
+
+export default App;
