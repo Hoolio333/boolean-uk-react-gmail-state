@@ -8,6 +8,7 @@ import "./styles/app.css";
 function App() {
   const [emails, setEmails] = useState(initialEmails);
   console.log(initialEmails);
+  const [hideRead, setHideRead] = useState(false);
 
   const toggleRead = (theEmail) => {
     setEmails(
@@ -33,6 +34,14 @@ function App() {
     );
   };
 
+  const emailsToDisplay = emails.filter((email) => {
+    if (hideRead && email.read === false) {
+      return false;
+    } else {
+      return true;
+    }
+  });
+
   return (
     <div className="app">
       <Header />
@@ -56,6 +65,7 @@ function App() {
           <li className="item toggle">
             <label for="hide-read">Hide read</label>
             <input
+              onChange={() => setHideRead(!hideRead)}
               id="hide-read"
               type="checkbox"
               checked={false}
@@ -65,7 +75,7 @@ function App() {
         </ul>
       </nav>
       <main className="emails">
-        {emails.map((email) => {
+        {emailsToDisplay.map((email) => {
           const { id, sender, title, starred, read } = email;
           return (
             <li key={id} className={read ? "email read" : "email unread"}>
